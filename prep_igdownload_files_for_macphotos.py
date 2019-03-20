@@ -1,7 +1,7 @@
-#3rd party packages
 import json
 import os, sys
 from datetime import datetime, time
+#3rd party packages
 from iptcinfo3 import IPTCInfo
 
 '''
