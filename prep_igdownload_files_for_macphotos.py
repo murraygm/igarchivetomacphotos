@@ -25,7 +25,7 @@ pathtoarchive='' #filepath to where your unzipped Instagram archive download is
 
 destFolder = '' #filepath to where you want to save renamed ALL items to
 
-igArchiveparts=['', '', ''] #array of each of the folders in the archive - ignoring part 1 as no images eg 'murraygm_20190316_part_2/'
+igArchiveparts=['', '', ''] #array of each of the folders in the archive - DO NOT INCLUDE part 1 as no images eg 'murraygm_20190316_part_2/'
 
 
 for a in range(len(igArchiveparts)):
