@@ -5,7 +5,7 @@ from datetime import datetime, time
 from iptcinfo3 import IPTCInfo
 
 '''
-Description: a little python script that takes the JSON
+Description: a little python 3 script that takes the JSON
 from your Instagram Data Download and uses it as IPTC data. 
 It then adds this back to the image so that you can import 
 the metadata into Mac Photos.
