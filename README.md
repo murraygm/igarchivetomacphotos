@@ -26,7 +26,7 @@ It loops through each part of the archive (as defined in the 'igArchiveparts' ar
 It reads the 'media.JSON' file for each archive folder. 
 First it loops through the photos and
 * creates a new name for the file (prepends the igname with date)
-* adds the caption (your initial post comment) to the image IPTC data as 'caption/description' - this becomes a comment when imported to Mac Photos
+* adds the caption (your initial post comment) to the image IPTC data as 'caption/description' - this becomes a description when imported to Mac Photos
 * takes the first 30 characters from the caption and adds them to the image IPTC data as 'object name' - this becomes the Title when imported to Mac Photos
 * Splits out any hashtags from the caption and adds them to the image IPTC data as the 'keywords' array - these become Mac Photos keywords
 * Adds the text string you specified for 'nCreator' to the image IPTC data as 'by-line'
@@ -45,6 +45,7 @@ When you import them to Mac Photos you can search the keywords, caption, title d
 
 ## Known issues
 * if a photo is part of a multipart post (more than 1 image) no caption is assigned - this is an Instagram issue and no caption is prescent for the JSON items
+* emojis are not supported and seem to get turned into fairly useless strings
 
 
 
