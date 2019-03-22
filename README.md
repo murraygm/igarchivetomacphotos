@@ -21,6 +21,13 @@ Also you can add yourself as the 'creator' of the images here:
 74 | nCreator='' #name of creator
 ```
 
+## added 22 March
+I added the ability to set an earliest date so that you can run it again on subsequent downloads of the archive and just import the new stuff - as long as IG doesn't change the structure ;) 
+Just set a string for the date in this variable. 
+```
+32 | igStartDate = '' #add a starting date string formatted like so '2019-03-19 13:45:59' so that only items after this will be prepped
+```
+
 ## What the script does
 It loops through each part of the archive (as defined in the 'igArchiveparts' array.
 It reads the 'media.JSON' file for each archive folder. 
