@@ -18,7 +18,7 @@ Add the paths to the parts of the archive to the script (make sure to include th
 
 Also you can add yourself as the 'creator' of the images here:
 ```
-53 | nCreator='' #name of creator
+74 | nCreator='' #name of creator
 ```
 
 ## What the script does
