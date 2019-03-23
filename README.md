@@ -27,6 +27,7 @@ Just set a string for the date in this variable.
 ```
 32 | igStartDate = '' #add a starting date string formatted like so '2019-03-19 13:45:59' so that only items after this will be prepped
 ```
+Also added the locotion name data to the description and as a keyword as Photos expects real Geo data for location.
 
 ## What the script does
 It loops through each part of the archive (as defined in the 'igArchiveparts' array.
