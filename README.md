@@ -55,7 +55,7 @@ Then it loops through the videos and
 When you import them to Mac Photos you can search the keywords, caption, title data and view it from the 'inspector'
 
 ## Known issues
-* if a photo is part of a multipart post (more than 1 image) no caption is assigned - this is an Instagram issue and no caption is prescent for the JSON items
+* if a photo is part of a multipart post (more than 1 image) no caption is assigned - this is an Instagram issue and no caption is present for the JSON items
 * emojis and othe UTF8 characters do not seem to be supported and seem to get turned into fairly useless strings - I think this is something that is tied how the iptcinfo3 library is set up.
 
 
