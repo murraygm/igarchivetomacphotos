@@ -4,6 +4,8 @@ scrappy python script that adds the IPTC metadata and file dates back to your im
 Go to Instagram and request your data. After a day or so they send you a link to multiple archive files.
 Download and unzip them. 
 
+![Screenshot](ig_to_photos_metadata.png?raw=true "Screenshot")
+
 ## Set up the python script
 Make sure you have the packages available, including the 3rd party 'iptcinfo3' [https://pypi.org/project/IPTCInfo3/]
 
