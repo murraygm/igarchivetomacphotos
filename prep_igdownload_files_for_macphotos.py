@@ -74,12 +74,14 @@ for a in range(len(igArchiveparts)):
 				nCreator='' #added a creator name
 				nLocal=''
 
+				nCaption=photos['caption']
+				nKeywords= []
+
 				if 'location' in photos:
 					nLocal=photos['location']
-
-				nCaption=photos['caption']
-
-				nKeywords= []
+					nCaption = nCaption + ' - tagged location: ' + nLocal
+					nKeywords.append(nLocal)
+				
 				if "#" in nCaption:  
 					nKeywordsA=nCaption.split(' ')
 					nKeywordsB=[]
