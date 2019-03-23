@@ -41,7 +41,7 @@ First it loops through the photos and
 * takes the first 30 characters from the caption and adds them to the image IPTC data as 'object name' - this becomes the Title when imported to Mac Photos
 * Splits out any hashtags from the caption and adds them to the image IPTC data as the 'keywords' array - these become Mac Photos keywords
 * Adds the text string you specified for 'nCreator' to the image IPTC data as 'by-line'
-* Adds the location (named string not GEO) to the image IPTC data as 'content location name'
+* Adds the location (named string not GEO) to the image IPTC data as 'content location name', also adds it to Mac Photos as a keyword and at the end of the image description
 * Adds the date taken to the image IPTC data as 'reference date'
 * then it **COPIES** the files to the 'destFolder' with the new names
 * then applies a new file Modified Date of the date the photo was taken - note this means Mac Photos orders them correctly (hack as can not find way to change creation date too)
@@ -56,7 +56,7 @@ When you import them to Mac Photos you can search the keywords, caption, title d
 
 ## Known issues
 * if a photo is part of a multipart post (more than 1 image) no caption is assigned - this is an Instagram issue and no caption is prescent for the JSON items
-* emojis are not supported and seem to get turned into fairly useless strings
+* emojis and othe UTF8 characters do not seem to be supported and seem to get turned into fairly useless strings - I think this is something that is tied how the iptcinfo3 library is set up.
 
 
 
