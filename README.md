@@ -3,6 +3,7 @@ scrappy python script that adds the IPTC metadata and file dates back to your im
 
 Go to Instagram and request your data. After a day or so they send you a link to multiple archive files.
 Download and unzip them. 
+**Note the script copies the photos but moves the videos, so keep the zips incase you need to rerun it**.
 
 ![Screenshot](ig_to_photos_metadata.png?raw=true "Screenshot")
 
@@ -42,12 +43,12 @@ First it loops through the photos and
 * Adds the text string you specified for 'nCreator' to the image IPTC data as 'by-line'
 * Adds the location (named string not GEO) to the image IPTC data as 'content location name'
 * Adds the date taken to the image IPTC data as 'reference date'
-* then it COPIES the files to the 'destFolder' with the new names
+* then it **COPIES** the files to the 'destFolder' with the new names
 * then applies a new file Modified Date of the date the photo was taken - note this means Mac Photos orders them correctly (hack as can not find way to change creation date too)
 
 Then it loops through the videos and
 * creates a new name for the file (prepends the igname with date)
-* MOVES the file to the 'destFolder' with the new names
+* **MOVES** the file to the 'destFolder' with the new names
 * then applies a new file Modified Date of the date the photo was taken - note this means Mac Photos orders them correctly (hack as can not find way to change creation date too)
 
 
