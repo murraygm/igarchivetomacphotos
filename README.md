@@ -63,7 +63,7 @@ When you import them to Mac Photos you can search the keywords, caption, title d
 ## Known issues
 * if a photo is part of a multipart post (more than 1 image) no caption is assigned - this is an Instagram issue and no caption is present for the JSON items
 * Videos and Direct items don't get the any of the metadata and are only tweaked for name and file date
-
+* These are the IG versions and are small and much lower res than the source files on you're phone. 
 
 
 
