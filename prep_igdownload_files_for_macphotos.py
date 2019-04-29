@@ -1,44 +1,98 @@
-import json
-import os, sys
-from datetime import datetime, time
-#3rd party packages
-from iptcinfo3 import IPTCInfo
-
 '''
-Description: a little python 3 script that takes the JSON
+prep_igdownload_files_for_macphotos.py
+
+v.2
+
+Description: a little python script that takes the JSON
 from your Instagram Data Download and uses it as IPTC data. 
 It then adds this back to the image so that you can import 
 the metadata into Mac Photos.
 
+This update supports Emoji and UTF-8 char set
+
 Created by: Murray Grigo-McMahon
 Github ref: https://github.com/murraygm
-Date created: 2019-03-18
+Date created: 2019-04-29
 
 OS - MAC
 
 license: Public domain, free to use (packages may have additional licenses)
+
+
+DEPENDANCIES: exiftool must be installed - download and install before running: http://owl.phy.queensu.ca/~phil/exiftool/
+
+Based on Instagram JSON structure in 'media.json' file like so:
+{
+  "photos": [
+    {
+      "caption": "",
+      "taken_at": "",
+      "path": ""
+    },
+    {
+      "caption": "",
+      "taken_at": "",
+      "path": ""
+    }
+  ],
+  "videos": [
+    {
+      "caption": "",
+      "taken_at": "",
+      "path": ""
+    },
+    {
+      "caption": "",
+      "taken_at": "",
+      "path": ""
+    }
+  ],
+  "direct": [
+    {
+      "taken_at": "",
+      "path": ""
+    }
+  ]
+}
+
+
 '''
 
+import json
+import os
+import sys
+from datetime import datetime, time
+import exiftool
 
-pathtoarchive='' #filepath to where your unzipped Instagram archive download is
+#filepath to where your unzipped Instagram archive download is
+pathtoarchive='/Users/murray/Desktop/instagram/'
+
+#filepath to where you want to save renamed ALL items to
+destFolder = '/Users/murray/Desktop/instagram/OUT/'
 
 
-destFolder = '' #filepath to where you want to save renamed ALL items to
+#array of each of the folders in the archive - ignorring part 1 as no images (eg: murraygm_20190318_part_2/)
+#ensure end slash added to the foldername
+igArchiveparts=['','']
 
-igArchiveparts=['', '', ''] #array of each of the folders in the archive - DO NOT INCLUDE part 1 as no images
+#set the photographers name for all items
+photographer = ''
 
 
-#already imported your library and just want to add the new stuff from the full down load? 
-igStartDate = '' #add a starting date string formatted like so '2019-03-19 13:45:59' so that only items after this will be prepped
+#after date limit - so if you've already imported your library and just want to add the new stuff from the full download 
+igStartDate = '' #date string formatted like so '2019-03-19 13:45:59'
 
 try:
 	datetime.strptime(igStartDate, '%Y-%m-%d %H:%M:%S')
 except:
 	igStartDateFlag = 0
 	igStartDateStamp = datetime.timestamp(datetime.strptime('2010-07-15 00:00:00', '%Y-%m-%d %H:%M:%S'))
+	igStartDate = '2010-07-15 00:00:00'
 else:	
 	igStartDateFlag = 1
 	igStartDateStamp = datetime.timestamp(datetime.strptime(igStartDate, '%Y-%m-%d %H:%M:%S'))
+
+print('started proccessing images after date: ' + igStartDate)
 
 
 for a in range(len(igArchiveparts)):
@@ -50,62 +104,82 @@ for a in range(len(igArchiveparts)):
 
 		targFolder = pathtoarchive+igArchiveparts[a]
 		
-
-		#Photo
+		#Photos
 		#loop through items
 		for photos in data['photos']:
-			#pull creation date and make new string
-			fileDate = str.split( photos['taken_at'], 'T')
 
-			#set the date on the file (last modified)
-			newDate = fileDate[0] + ' ' + fileDate[1]
+
+			origPath = pathtoarchive+igArchiveparts[a]+photos['path']
+			
+
+			aFileDate = str.split( photos['taken_at'], 'T')
+
+			newDate = aFileDate[0] + ' ' + aFileDate[1]
 			newStamp = datetime.strptime(newDate, '%Y-%m-%d %H:%M:%S')
 			newCreateDate = datetime.timestamp(newStamp)
 
+
 			if igStartDateStamp < newCreateDate:
 
-				fileNameBit = str.split( photos['path'], '/')
-				newFname = fileDate[0]+'_'+fileNameBit[2]
+				nFileDate = "-IPTC:ReferenceDate=" + aFileDate[0]
 
-				origPath = targFolder+photos['path']
-				newPath = destFolder+newFname
+				nTitle="-IPTC:ObjectName=" + photos['caption'][:30]
+				nByLine="-IPTC:By-line=" + photographer 
+				nLocal="-IPTC:ContentLocationName="
 
-				nTitle=photos['caption']
-				nCreator='' #added a creator name
-				nLocal=''
+				aCaption = photos['caption']
+				nCaption="-IPTC:Caption-Abstract="+ photos['caption']
+				aKeywords= []
+				nKeywords= "-IPTC:Keywords="
 
-				nCaption=photos['caption']
-				nKeywords= []
-
-				if 'location' in photos:
-					nLocal=photos['location']
-					nCaption = nCaption + ' - tagged location: ' + nLocal
-					nKeywords.append(nLocal)
 				
-				if "#" in nCaption:  
-					nKeywordsA=nCaption.split(' ')
+
+				if "#" in aCaption:  
+					nKeywordsA=aCaption.split(' ')
 					nKeywordsB=[]
 
 					for i in range(len(nKeywordsA)):
 						nKeywordsB=nKeywordsA[i].split('#')
 						if len(nKeywordsB)>1:
-							nKeywords.append(nKeywordsB[1])
+							aKeywords.append(nKeywordsB[1])
 
-				info = IPTCInfo(origPath)
+				if 'location' in photos:
+						nLocal="IPTC:ContentLocationName=" + photos['location']
+						nCaption = nCaption + ' - tagged location: ' + photos['location']
+						aKeywords.append(photos['location'])
 
-				info['object name'] = nTitle[:30]
-				info['content location name'] = nLocal
-				info['reference date'] = fileDate[0]
-				info['keywords'] = nKeywords
-				info['by-line'] = nCreator
-				info['caption/abstract'] = nCaption
 
-	#			print(nTitle[:30], newFname)
-				info.save()
-				info.save_as(newPath)
+				nKeywords= "-IPTC:Keywords=" + ", ".join(str(x) for x in aKeywords)
 
-				#set the new creation date
-				os.utime(newPath, (newCreateDate, newCreateDate))
+#				print(nCaption)
+				with exiftool.ExifTool() as et:
+
+					pic = bytes(origPath, 'utf-8')
+					#
+					et.execute(bytes("-overwrite_original", "utf-8"),
+						bytes("-codedCharacterSet=utf8", "utf-8"),
+						bytes(nTitle,'utf-8'),
+						bytes(nCaption,'utf-8'),
+						bytes(nByLine,'utf-8'),
+						bytes(nLocal,'utf-8'),
+						bytes(nFileDate,'utf-8'),
+						bytes(nKeywords,'utf-8'),
+						pic)
+
+				fileNameBit = str.split( photos['path'], '/')
+				newFname = aFileDate[0]+'_'+fileNameBit[2]
+				newPath = destFolder+newFname
+
+				if os.path.exists(origPath):
+					os.rename(origPath, newPath)
+				else:
+					print(origPath + ' - PHOTO NOT FOUND')
+
+				if os.path.exists(newPath):	
+					#set the new creation date
+					os.utime(newPath, (newCreateDate, newCreateDate))
+				else:
+					print(newPath + ' - MOVED PHOTO NOT FOUND')
 
 		#Video
 		#loop through items
@@ -125,11 +199,45 @@ for a in range(len(igArchiveparts)):
 				vorigPath = targFolder+videos['path']
 				vnewPath = destFolder+vnewFname
 
-	#			print (vorigPath)
-	#			print (vnewPath)
+				if os.path.exists(vorigPath):
+					#rename file
+					os.rename(vorigPath, vnewPath)
+				else:
+					print(vorigPath + ' - VIDEO NOT FOUND')
 
-				#rename file
-				os.rename(vorigPath, vnewPath)
+				if os.path.exists(vnewPath):
+					#set the new creation date
+					os.utime(vnewPath, (vnewCreateDate, vnewCreateDate))
+				else:
+					print(vnewPath + ' - MOVED VIDEO NOT FOUND')
 
-				#set the new creation date
-				os.utime(vnewPath, (vnewCreateDate, vnewCreateDate))
+		#Direct
+		#loop through items
+		if 'direct' in data:
+			for direct in data['direct']:
+
+				dfileDate = str.split( direct['taken_at'], 'T')
+				#set the date on the file (last modified)
+				dfileDateTrim = dfileDate[1]
+				dnewDate = dfileDate[0] + ' ' + dfileDateTrim[:7]
+				dnewStamp = datetime.strptime(dnewDate, '%Y-%m-%d %H:%M:%S')
+				dnewCreateDate = datetime.timestamp(dnewStamp)
+
+				if igStartDateStamp < dnewCreateDate:
+
+					dfileNameBit = str.split( direct['path'], '/')
+					dnewFname = dfileDate[0]+'_'+dfileNameBit[2]
+
+					dorigPath = targFolder+direct['path']
+					dnewPath = destFolder+dnewFname
+
+					if os.path.exists(dorigPath):
+						#rename file
+						os.rename(dorigPath, dnewPath)
+					else:
+						print(dorigPath + ' - DIRECT NOT FOUND')
+					if os.path.exists(dnewPath):	
+						#set the new creation date
+						os.utime(dnewPath, (dnewCreateDate, dnewCreateDate))
+					else:
+						print(dnewPath + ' - MOVED DIRECT NOT FOUND')
