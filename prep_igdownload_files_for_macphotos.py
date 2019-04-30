@@ -130,6 +130,7 @@ for a in range(len(igArchiveparts)):
 				aCaption = photos['caption']
 				nCaption="-IPTC:Caption-Abstract="+ photos['caption']
 				aKeywords= []
+#				aKeywords.append('instagram') #if you want to automatically add an 'instagram' keyword uncomment this line
 				nKeywords= "-IPTC:Keywords="
 
 				
